@@ -1,4 +1,5 @@
 #include <chrono>
+#include <iostream>
 #include "elevator.h"
 
 Elevator::Elevator() {
@@ -28,7 +29,16 @@ Elevator::~Elevator() {
 }
 
 void Elevator::show_status() {
-	curr_state->show_status();
+	std::string floor_status = curr_state->get_status_string();
+	std::string button_status = "button status (UP, FLOOR_1, DOWN, FLOOR_2): ";
+	for (int idx = 0; idx < 4; ++idx) {
+		if (button[idx]) {
+			button_status += "T";
+		} else {
+			button_status += "F";
+		}
+	}
+	std::cout << floor_status << " " << button_status << std::endl;
 }
 
 void Elevator::set_next_state(State* state) {

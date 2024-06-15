@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 
 class Elevator;
 
@@ -21,7 +22,7 @@ enum ButtonType {
 class State {
 public:
 	State(Elevator*);
-	virtual void show_status() = 0;
+	virtual std::string get_status_string() = 0;
 	virtual ButtonType select_action() = 0;
 	virtual void handle_up() = 0;
 	virtual void handle_down() = 0;
@@ -36,7 +37,7 @@ protected:
 class Floor1State : public State {
 public:
 	Floor1State(Elevator*);
-	void show_status() override;
+	std::string get_status_string() override;
 	ButtonType select_action() override;
 	void handle_up() override;
 	void handle_down() override;

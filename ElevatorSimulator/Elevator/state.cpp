@@ -9,8 +9,8 @@ State::State(Elevator* elevator) {
 
 Floor1State::Floor1State(Elevator* elevator): State(elevator) {}
 
-void Floor1State::show_status() {
-	std::cout << "Elevator is on floor 1: Idle" << std::endl;
+std::string Floor1State::get_status_string() {
+	return "Elevator is on floor 1: Idle";
 }
 
 ButtonType Floor1State::select_action() {

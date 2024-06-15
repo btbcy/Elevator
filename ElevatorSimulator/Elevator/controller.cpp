@@ -24,18 +24,11 @@ static void show_elevator_status(Elevator* elevator) {
 
 int main() {
 
-	/*
-	Elevator* elevator = new Elevator();
-
-	std::thread t_elevator_status(show_elevator_status, elevator);
-	t_elevator_status.join();
-	delete elevator;
-	*/
-SOCKET sock, new_sock;
+    SOCKET sock, new_sock;
     socklen_t addrlen;
     struct sockaddr_in my_addr, client_addr;
     int status;
-    char indata[1024] = {0}, outdata[1024] = {0};
+    char indata[1024] = {0};
     int on = 1;
 
     // init winsock
@@ -82,6 +75,10 @@ SOCKET sock, new_sock;
     printf("wait for connection...\n");
 
     addrlen = sizeof(client_addr);
+    
+    int user_operation;
+	Elevator* elevator = new Elevator();
+	// std::thread t_elevator_status(show_elevator_status, elevator);
 
     while (1) {
         new_sock = accept(sock, (struct sockaddr *)&client_addr, &addrlen);
@@ -96,14 +93,17 @@ SOCKET sock, new_sock;
                 printf("client closed connection.\n");
                 break;
             }
-            printf("recv: %s\n", indata);
 
-            sprintf(outdata, "echo %s", indata);
-            send(new_sock, outdata, strlen(outdata), 0);
+			user_operation = atoi(indata);
+			elevator->press_button((ButtonType)user_operation);
+            elevator->show_status();
+
+            send(new_sock, indata, strlen(indata), 0);
         }
     }
     closesocket(sock);
     WSACleanup();
 
+	delete elevator;
 	return 0;
 }

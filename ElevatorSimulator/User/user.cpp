@@ -47,7 +47,7 @@ int main()
     while (1) {
         printf("Press button (0: up, 1: down, 2: floor 1, 3: floor 2): ");
         gets_s(outdata);
-        printf("send: %s\n", outdata);
+        //printf("send: %s\n", outdata);
         send(sock, outdata, strlen(outdata), 0);
 
         int nbytes = recv(sock, indata, sizeof(indata), 0);
@@ -56,7 +56,7 @@ int main()
             printf("server closed connection.\n");
             break;
         }
-        printf("recv: %s\n", indata);
+        //printf("recv: %s\n", indata);
     }
     WSACleanup();
 
