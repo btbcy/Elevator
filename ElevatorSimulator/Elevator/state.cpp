@@ -17,7 +17,7 @@ std::string Floor1State::get_status_string() {
 }
 
 ButtonType Floor1State::select_action() {
-	bool* button = this->elevator->get_button();
+	auto button = this->elevator->get_button();
 	if (button[UP]) {
 		return ButtonType::UP;
 	} else if (button[FLOOR_1]) {
@@ -62,7 +62,7 @@ std::string Floor2State::get_status_string() {
 }
 
 ButtonType Floor2State::select_action() {
-	bool* button = this->elevator->get_button();
+	auto button = this->elevator->get_button();
 	if (button[DOWN]) {
 		return ButtonType::DOWN;
 	} else if (button[FLOOR_2]) {
@@ -147,7 +147,7 @@ std::string Floor1OpenState::get_status_string() {
 }
 
 ButtonType Floor1OpenState::select_action() {
-	bool* button = this->elevator->get_button();
+	auto button = this->elevator->get_button();
 	if (button[UP]) {
 		return ButtonType::UP;
 	} else if (button[FLOOR_1]) {
@@ -202,7 +202,7 @@ std::string Floor2OpenState::get_status_string() {
 }
 
 ButtonType Floor2OpenState::select_action() {
-	bool* button = this->elevator->get_button();
+	auto button = this->elevator->get_button();
 	if (button[DOWN]) {
 		return ButtonType::DOWN;
 	} else if (button[FLOOR_2]) {

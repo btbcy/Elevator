@@ -1,4 +1,3 @@
-#include <chrono>
 #include <iostream>
 #include "elevator.h"
 
@@ -13,7 +12,9 @@ Elevator::Elevator() {
 	curr_state = state_items[STATE_FLOOR_1];
 	next_state = nullptr;
 	expiration_time = std::chrono::system_clock::now();
-	reset_button();
+	for (int idx = 0; idx < 4; ++idx) {
+		button[idx] = false;
+	}
 }
 
 Elevator::~Elevator() {
@@ -23,10 +24,19 @@ Elevator::~Elevator() {
 }
 
 void Elevator::show_status() {
-	std::string floor_status = curr_state->get_status_string();
-	std::string button_status = ", button status (UP, DOWN, FLOOR_1, FLOOR_2): ";
+	std::array<bool, 4> button_snapshot;
+	std::string floor_status;
+	{
+		std::lock(state_mutex, button_mutex);
+		std::lock_guard<std::mutex> state_lock(state_mutex, std::adopt_lock);
+		std::lock_guard<std::mutex> button_lock(button_mutex, std::adopt_lock);
+
+		floor_status = curr_state->get_status_string();
+		button_snapshot = this->button;
+	}
+	std::string button_status = ", button status UD12: ";
 	for (int idx = 0; idx < 4; ++idx) {
-		if (button[idx]) {
+		if (button_snapshot[idx]) {
 			button_status += "T";
 		} else {
 			button_status += "F";
@@ -57,13 +67,17 @@ void Elevator::set_next_state(State* state) {
 void Elevator::update_state() {
 	auto current_time = std::chrono::system_clock::now();
 	if (this->next_state != nullptr && current_time >= expiration_time) {
+		std::lock(state_mutex, button_mutex);
+		std::lock_guard<std::mutex> state_lock(state_mutex, std::adopt_lock);
+		std::lock_guard<std::mutex> button_lock(button_mutex, std::adopt_lock);
+
 		this->curr_state = this->next_state;
 		this->next_state = nullptr;
 		this->curr_state->enter_state();
 	}
 }
 
-State* Elevator::get_state_item(StateType type) {
+State* Elevator::get_state_item(StateType type) const {
 	return state_items[type];
 }
 
@@ -74,13 +88,8 @@ void Elevator::set_expiration_time(int seconds) {
 
 void Elevator::press_button(ButtonType type) {
 	if (type != ButtonType::NO_OPERATION) {
+		std::lock_guard<std::mutex> lock(button_mutex);
 		button[type] = true;
-	}
-}
-
-void Elevator::reset_button() {
-	for (int idx = 0; idx < 4; ++idx) {
-		button[idx] = false;
 	}
 }
 
@@ -90,6 +99,7 @@ void Elevator::reset_button(ButtonType type) {
 	}
 }
 
-bool* Elevator::get_button() {
+std::array<bool, 4> Elevator::get_button() {
+	std::lock_guard<std::mutex> lock(button_mutex);
 	return button;
 }
