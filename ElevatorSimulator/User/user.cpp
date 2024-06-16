@@ -1,6 +1,6 @@
 #include <winsock2.h>
 #include <ws2tcpip.h>
-#include <stdio.h>
+#include <iostream>
 #include <stdlib.h>
 #include <string.h>
 
@@ -47,7 +47,7 @@ int main() {
 
     while (1) {
         printf("Press button (0: up, 1: down, 2: floor 1, 3: floor 2): ");
-        gets_s(outdata);
+        std::cin.getline(outdata, sizeof(outdata));
         //printf("send: %s\n", outdata);
         send(sock, outdata, strlen(outdata), 0);
 

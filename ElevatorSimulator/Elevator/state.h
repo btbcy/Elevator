@@ -23,6 +23,7 @@ enum ButtonType {
 class State {
 public:
 	State(Elevator*);
+	virtual ~State() = default;
 	virtual std::string get_status_string() = 0;
 	virtual ButtonType select_action() = 0;
 	virtual void enter_state() {};
