@@ -8,15 +8,14 @@ public:
 	Elevator();
 	~Elevator();
 	void show_status();
+	void action();
 	void set_next_state(State*);
-	void set_next_state(
-		State*, 
-		std::chrono::time_point<std::chrono::system_clock>);
 	void update_state();
 	State* get_state_item(StateType type);
-	void reset_timer();
+	void set_expiration_time(int);
 	void press_button(ButtonType button);
 	void reset_button();
+	void reset_button(ButtonType button);
 	bool* get_button();
 
 private:

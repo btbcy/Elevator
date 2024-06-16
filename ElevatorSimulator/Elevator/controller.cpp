@@ -21,6 +21,13 @@ static void show_elevator_status(Elevator* elevator) {
 	}
 }
 
+static void control_elevator(Elevator* elevator) {
+    while (true) {
+		elevator->action();
+        elevator->update_state();
+	}
+}
+
 int main() {
 
     // code about winodws socket is borrowed from
@@ -79,8 +86,12 @@ int main() {
     
     int user_operation;
 	Elevator* elevator = new Elevator();
+
 	std::thread t_elevator_status(show_elevator_status, elevator);
     t_elevator_status.detach();
+
+    std::thread t_elevator_control(control_elevator, elevator);
+	t_elevator_control.detach();
 
     while (1) {
         new_sock = accept(sock, (struct sockaddr *)&client_addr, &addrlen);

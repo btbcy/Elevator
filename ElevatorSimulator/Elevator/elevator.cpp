@@ -4,21 +4,15 @@
 
 Elevator::Elevator() {
 	state_items[0] = new Floor1State(this);
-	for (int idx = 1; idx < 6; ++idx) {
-		state_items[idx] = new Floor1State(this);
-	}
-	/*
-	TODO: more states
 	state_items[1] = new Floor2State(this);
 	state_items[2] = new Floor1to2State(this);
 	state_items[3] = new Floor2to1State(this);
 	state_items[4] = new Floor1OpenState(this);
 	state_items[5] = new Floor2OpenState(this);
-	*/
 
 	curr_state = state_items[STATE_FLOOR_1];
 	next_state = nullptr;
-	reset_timer();
+	expiration_time = std::chrono::system_clock::now();
 	reset_button();
 }
 
@@ -30,7 +24,7 @@ Elevator::~Elevator() {
 
 void Elevator::show_status() {
 	std::string floor_status = curr_state->get_status_string();
-	std::string button_status = "button status (UP, FLOOR_1, DOWN, FLOOR_2): ";
+	std::string button_status = ", button status (UP, DOWN, FLOOR_1, FLOOR_2): ";
 	for (int idx = 0; idx < 4; ++idx) {
 		if (button[idx]) {
 			button_status += "T";
@@ -41,18 +35,23 @@ void Elevator::show_status() {
 	std::cout << floor_status << " " << button_status << std::endl;
 }
 
-void Elevator::set_next_state(State* state) {
-	this->next_state = nullptr;
-	this->curr_state = state;
-	reset_timer();
+void Elevator::action() {
+	auto operation = curr_state->select_action();
+	if (operation == ButtonType::NO_OPERATION) {
+		return;
+	} else if (operation == ButtonType::UP) {
+		curr_state->handle_up();
+	} else if (operation == ButtonType::DOWN) {
+		curr_state->handle_down();
+	} else if (operation == ButtonType::FLOOR_1) {
+		curr_state->handle_floor1();
+	} else if (operation == ButtonType::FLOOR_2) {
+		curr_state->handle_floor2();
+	}
 }
 
-void Elevator::set_next_state(
-		State* state, 
-		std::chrono::time_point<std::chrono::system_clock> expiration_time
-	) {
+void Elevator::set_next_state(State* state) {
 	this->next_state = state;
-	this->expiration_time = expiration_time;
 }
 
 void Elevator::update_state() {
@@ -60,7 +59,7 @@ void Elevator::update_state() {
 	if (this->next_state != nullptr && current_time >= expiration_time) {
 		this->curr_state = this->next_state;
 		this->next_state = nullptr;
-		reset_timer();
+		this->curr_state->enter_state();
 	}
 }
 
@@ -68,17 +67,26 @@ State* Elevator::get_state_item(StateType type) {
 	return state_items[type];
 }
 
-void Elevator::reset_timer() {
-	expiration_time = std::chrono::system_clock::now();
+void Elevator::set_expiration_time(int seconds) {
+	auto current_time = std::chrono::system_clock::now();
+	this->expiration_time = current_time + std::chrono::seconds(seconds);
 }
 
 void Elevator::press_button(ButtonType type) {
-	button[type] = true;
+	if (type != ButtonType::NO_OPERATION) {
+		button[type] = true;
+	}
 }
 
 void Elevator::reset_button() {
 	for (int idx = 0; idx < 4; ++idx) {
 		button[idx] = false;
+	}
+}
+
+void Elevator::reset_button(ButtonType type) {
+	if (type != ButtonType::NO_OPERATION) {
+		button[type] = false;
 	}
 }
 
