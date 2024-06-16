@@ -10,8 +10,9 @@
 const char* host = "127.0.0.1";
 int port = 7000;
 
-int main()
-{
+int main() {
+    // code about winodws socket is borrowed from
+    // https://shengyu7697.github.io/cpp-windows-tcp-socket/
     SOCKET sock;
     struct sockaddr_in serv_name {};
     int status;

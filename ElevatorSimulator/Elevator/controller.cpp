@@ -4,7 +4,6 @@
 #include <stdlib.h>
 #include <string>
 #include <thread>
-#include <windows.h>
 
 #include "elevator.h"
 
@@ -18,12 +17,14 @@ int port = 7000;
 static void show_elevator_status(Elevator* elevator) {
 	while (true) {
 		elevator->show_status();
-		Sleep(1000);
+        std::this_thread::sleep_for(std::chrono::seconds(1));
 	}
 }
 
 int main() {
 
+    // code about winodws socket is borrowed from
+    // https://shengyu7697.github.io/cpp-windows-tcp-socket/
     SOCKET sock, new_sock;
     socklen_t addrlen;
     struct sockaddr_in my_addr, client_addr;
@@ -78,7 +79,8 @@ int main() {
     
     int user_operation;
 	Elevator* elevator = new Elevator();
-	// std::thread t_elevator_status(show_elevator_status, elevator);
+	std::thread t_elevator_status(show_elevator_status, elevator);
+    t_elevator_status.detach();
 
     while (1) {
         new_sock = accept(sock, (struct sockaddr *)&client_addr, &addrlen);
@@ -96,7 +98,6 @@ int main() {
 
 			user_operation = atoi(indata);
 			elevator->press_button((ButtonType)user_operation);
-            elevator->show_status();
 
             send(new_sock, indata, strlen(indata), 0);
         }
