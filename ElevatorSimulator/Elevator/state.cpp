@@ -170,8 +170,8 @@ void Floor1OpenState::enter_state() {
 }
 
 void Floor1OpenState::handle_up() {
-	elevator->reset_button(ButtonType::FLOOR_1);
-	elevator->reset_button(ButtonType::UP);
+	elevator->reset_button_with_lock(ButtonType::FLOOR_1);
+	elevator->reset_button_with_lock(ButtonType::UP);
 	elevator->set_expiration_time(2);
 }
 
@@ -181,8 +181,8 @@ void Floor1OpenState::handle_down() {
 }
 
 void Floor1OpenState::handle_floor1() {
-	elevator->reset_button(ButtonType::FLOOR_1);
-	elevator->reset_button(ButtonType::UP);
+	elevator->reset_button_with_lock(ButtonType::FLOOR_1);
+	elevator->reset_button_with_lock(ButtonType::UP);
 	elevator->set_expiration_time(2);
 }
 
@@ -230,8 +230,8 @@ void Floor2OpenState::handle_up() {
 }
 
 void Floor2OpenState::handle_down() {
-	elevator->reset_button(ButtonType::FLOOR_2);
-	elevator->reset_button(ButtonType::DOWN);
+	elevator->reset_button_with_lock(ButtonType::FLOOR_2);
+	elevator->reset_button_with_lock(ButtonType::DOWN);
 	elevator->set_expiration_time(2);
 }
 
@@ -241,7 +241,7 @@ void Floor2OpenState::handle_floor1() {
 }
 
 void Floor2OpenState::handle_floor2() {
-	elevator->reset_button(ButtonType::FLOOR_2);
-	elevator->reset_button(ButtonType::DOWN);
+	elevator->reset_button_with_lock(ButtonType::FLOOR_2);
+	elevator->reset_button_with_lock(ButtonType::DOWN);
 	elevator->set_expiration_time(2);
 }

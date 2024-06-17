@@ -13,10 +13,11 @@ public:
 	void action();
 	void set_next_state(State*);
 	void update_state();
-	State* get_state_item(StateType type) const;
+	State* get_state_item(StateType) const;
 	void set_expiration_time(int);
-	void press_button(ButtonType button);
-	void reset_button(ButtonType button);
+	void press_button(ButtonType);
+	void reset_button(ButtonType);
+	void reset_button_with_lock(ButtonType);
 	std::array<bool, 4> get_button();
 
 private:

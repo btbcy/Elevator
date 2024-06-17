@@ -99,6 +99,11 @@ void Elevator::reset_button(ButtonType type) {
 	}
 }
 
+void Elevator::reset_button_with_lock(ButtonType type) {
+	std::lock_guard<std::mutex> lock(button_mutex);
+	reset_button(type);
+}
+
 std::array<bool, 4> Elevator::get_button() {
 	std::lock_guard<std::mutex> lock(button_mutex);
 	return button;
