@@ -38,4 +38,4 @@ Run `controller.exe` before `user.exe` to setup server .
 - `button`: `show_elevator_status` 讀取、`control_elevator`修改、`main` 修改
 - `curr_state`: `show_elevator_status` 讀取、`control_elevator`修改
 
-在以上位置加上 lock 保護，避免同時修改或是讀取到修改中的資源。
+在以上讀取或修改發生的位置加上 lock 保護，避免同時修改或是讀取到修改中的資源。
